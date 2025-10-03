@@ -108,7 +108,7 @@ Want to share your app with others? Deploy it for free:
 3. **Deploy from GitHub repo**
 4. **Choose your repository**
 
-**See [DEPLOY.md](DEPLOY.md) for detailed instructions.**
+**Railway will automatically detect your Flask app and deploy it!**
 
 ## 🎉 Ready to Get Started?
 
