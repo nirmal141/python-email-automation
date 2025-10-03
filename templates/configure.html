@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}Configure Email - Email Automation{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-cog me-2"></i>Email Configuration</h4>
+                <p class="text-muted mb-0">Configure your email settings to send automated emails</p>
+            </div>
+            <div class="card-body">
+                <form method="POST" id="config-form">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="sender_email" class="form-label">
+                                    <i class="fas fa-envelope me-1"></i>Sender Email
+                                </label>
+                                <input type="email" class="form-control" id="sender_email" name="sender_email" 
+                                       placeholder="your.email@example.com" required>
+                                <div class="form-text">Your Gmail address (or other email provider)</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="sender_name" class="form-label">
+                                    <i class="fas fa-user me-1"></i>Sender Name
+                                </label>
+                                <input type="text" class="form-control" id="sender_name" name="sender_name" 
+                                       value="Nirmal Boghara" placeholder="Your Name">
+                                <div class="form-text">Name that will appear in emails</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="sender_password" class="form-label">
+                            <i class="fas fa-lock me-1"></i>App Password
+                        </label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="sender_password" name="sender_password" 
+                                   placeholder="Your app-specific password" required>
+                            <button class="btn btn-outline-secondary" type="button" id="toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-text">
+                            <strong>For Gmail:</strong> Use an App Password, not your regular password. 
+                            <a href="https://support.google.com/accounts/answer/185833" target="_blank">Learn how to create one</a>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Security Note:</strong> Your password is stored securely in memory only and is not saved to disk.
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+                        </a>
+                        <div>
+                            <button type="button" class="btn btn-outline-primary me-2" id="test-connection">
+                                <i class="fas fa-plug me-1"></i>Test Connection
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>Save Configuration
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5><i class="fas fa-question-circle me-2"></i>Setup Instructions</h5>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="setupAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="gmailSetup">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#gmailCollapse">
+                                <i class="fas fa-google me-2"></i>Gmail Setup
+                            </button>
+                        </h2>
+                        <div id="gmailCollapse" class="accordion-collapse collapse show" data-bs-parent="#setupAccordion">
+                            <div class="accordion-body">
+                                <ol>
+                                    <li>Go to your <a href="https://myaccount.google.com/security" target="_blank">Google Account settings</a></li>
+                                    <li>Navigate to <strong>Security</strong> → <strong>2-Step Verification</strong></li>
+                                    <li>Enable 2-Step Verification if not already enabled</li>
+                                    <li>Go to <strong>App passwords</strong> and generate a new app password</li>
+                                    <li>Use this app password (not your regular password) in the form above</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="otherEmailSetup">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#otherCollapse">
+                                <i class="fas fa-envelope me-2"></i>Other Email Providers
+                            </button>
+                        </h2>
+                        <div id="otherCollapse" class="accordion-collapse collapse" data-bs-parent="#setupAccordion">
+                            <div class="accordion-body">
+                                <p>For other email providers, you may need to:</p>
+                                <ul>
+                                    <li>Enable "Less secure app access" (not recommended)</li>
+                                    <li>Use app-specific passwords</li>
+                                    <li>Configure SMTP settings manually</li>
+                                </ul>
+                                <p class="text-muted">Contact your email provider for specific instructions.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle password visibility
+    document.getElementById('toggle-password').addEventListener('click', function() {
+        const passwordField = document.getElementById('sender_password');
+        const icon = this.querySelector('i');
+        
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordField.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+    
+    // Test connection
+    document.getElementById('test-connection').addEventListener('click', function() {
+        const formData = new FormData(document.getElementById('config-form'));
+        const data = Object.fromEntries(formData);
+        
+        if (!data.sender_email || !data.sender_password) {
+            alert('Please fill in both email and password fields');
+            return;
+        }
+        
+        this.disabled = true;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Testing...';
+        
+        fetch('/test_connection', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert('Connection failed: ' + data.error);
+            } else {
+                alert('Connection successful!');
+            }
+        })
+        .catch(error => {
+            alert('Error testing connection: ' + error.message);
+        })
+        .finally(() => {
+            this.disabled = false;
+            this.innerHTML = '<i class="fas fa-plug me-1"></i>Test Connection';
+        });
+    });
+});
+</script>
+{% endblock %}
+

@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Email Automation{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-tachometer-alt me-2"></i>Dashboard</h1>
+            <div class="btn-group">
+                <a href="{{ url_for('configure') }}" class="btn btn-outline-primary">
+                    <i class="fas fa-cog me-1"></i>Configure Email
+                </a>
+                <a href="{{ url_for('upload') }}" class="btn btn-primary">
+                    <i class="fas fa-upload me-1"></i>Upload CSV
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Email Status</h6>
+                        <h4 id="email-status">Not Configured</h4>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-envelope fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">CSV Status</h6>
+                        <h4 id="csv-status">No File</h4>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-file-csv fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Campaign Status</h6>
+                        <h4 id="campaign-status">Ready</h4>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-rocket fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">Quick Actions</h6>
+                        <div class="btn-group-vertical btn-group-sm">
+                            <a href="{{ url_for('configure') }}" class="btn btn-light btn-sm">Configure</a>
+                            <a href="{{ url_for('upload') }}" class="btn btn-light btn-sm">Upload</a>
+                        </div>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-bolt fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-line me-2"></i>Recent Activity</h5>
+            </div>
+            <div class="card-body">
+                <div id="activity-log">
+                    <div class="text-center text-muted py-4">
+                        <i class="fas fa-info-circle fa-2x mb-2"></i>
+                        <p>No recent activity. Start by configuring your email settings and uploading a CSV file.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-tasks me-2"></i>Quick Setup</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-cog text-primary me-2"></i>
+                            Configure Email
+                        </div>
+                        <span class="badge bg-secondary" id="config-badge">Pending</span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-upload text-success me-2"></i>
+                            Upload CSV
+                        </div>
+                        <span class="badge bg-secondary" id="upload-badge">Pending</span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-rocket text-info me-2"></i>
+                            Start Campaign
+                        </div>
+                        <span class="badge bg-secondary" id="campaign-badge">Ready</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle me-2"></i>Getting Started</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                <i class="fas fa-cog fa-lg"></i>
+                            </div>
+                            <h6>1. Configure Email</h6>
+                            <p class="text-muted small">Set up your email credentials and sender information.</p>
+                            <a href="{{ url_for('configure') }}" class="btn btn-outline-primary btn-sm">Configure</a>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                <i class="fas fa-upload fa-lg"></i>
+                            </div>
+                            <h6>2. Upload CSV</h6>
+                            <p class="text-muted small">Upload your contacts CSV file with company and recruiter information.</p>
+                            <a href="{{ url_for('upload') }}" class="btn btn-outline-success btn-sm">Upload</a>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <div class="bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                <i class="fas fa-rocket fa-lg"></i>
+                            </div>
+                            <h6>3. Send Campaign</h6>
+                            <p class="text-muted small">Preview your emails and start the automated campaign.</p>
+                            <a href="{{ url_for('campaign') }}" class="btn btn-outline-info btn-sm">Campaign</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Check system status
+    checkSystemStatus();
+    
+    // Update status every 30 seconds
+    setInterval(checkSystemStatus, 30000);
+});
+
+function checkSystemStatus() {
+    // This would typically make API calls to check the actual status
+    // For now, we'll just show the current state
+    console.log('Checking system status...');
+}
+</script>
+{% endblock %}
+

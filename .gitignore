@@ -1,0 +1,188 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Flask
+instance/
+.webassets-cache
+
+# Email Automation Specific
+# Personal files - DO NOT COMMIT
+uploads/
+*.csv
+*.pdf
+*.doc
+*.docx
+email_automation.log
+*.log
+
+# Personal resume files
+*resume*
+*Resume*
+*CV*
+*cv*
+*_Resume*
+*_resume*
+
+# Personal contact files
+*contacts*
+*Contacts*
+*leads*
+*Leads*
+*recruiters*
+*Recruiters*
+
+# Configuration files with sensitive data
+config.py
+secrets.py
+.env
+.env.local
+.env.production
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Backup files
+*.bak
+*.backup
+backup/
+
+# Test files
+test_*.csv
+sample_*.csv
+demo_*.csv
+
+# Email templates with personal data
+personal_*.html
+custom_*.html
+
+# Campaign data
+campaign_*.csv
+campaign_*.json
+campaign_data/
+
+# Logs
+logs/
+*.log
+log/
+
+# Cache
+.cache/
+cache/
+
+# Node modules (if any)
+node_modules/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# Email automation specific sensitive files
+email_credentials.json
+smtp_config.json
+personal_data/
+sensitive_data/

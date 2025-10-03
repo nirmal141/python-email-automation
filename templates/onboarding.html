@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome - Email Automation Dashboard{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="text-center mb-5">
+            <h1 class="display-4 text-primary">
+                <i class="fas fa-rocket me-3"></i>Welcome to Email Automation!
+            </h1>
+            <p class="lead text-muted">Let's get you set up in just a few minutes</p>
+        </div>
+
+        <!-- Progress Steps -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="step-item" data-step="1">
+                            <div class="step-number bg-primary text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <i class="fas fa-cog"></i>
+                            </div>
+                            <h6>Configure Email</h6>
+                            <small class="text-muted">Set up your email account</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="step-item" data-step="2">
+                            <div class="step-number bg-secondary text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <i class="fas fa-upload"></i>
+                            </div>
+                            <h6>Upload Contacts</h6>
+                            <small class="text-muted">Add your contact list</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="step-item" data-step="3">
+                            <div class="step-number bg-secondary text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <h6>Customize Email</h6>
+                            <small class="text-muted">Personalize your messages</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="step-item" data-step="4">
+                            <div class="step-number bg-secondary text-white rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <h6>Send Campaign</h6>
+                            <small class="text-muted">Start your email campaign</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Start Guide -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Start</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="list-group list-group-flush">
+                            <li class="list-group-item d-flex align-items-center">
+                                <span class="badge bg-primary me-3">1</span>
+                                <div>
+                                    <strong>Configure Email</strong><br>
+                                    <small class="text-muted">Set up Gmail, Outlook, or other email providers</small>
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <span class="badge bg-primary me-3">2</span>
+                                <div>
+                                    <strong>Upload CSV</strong><br>
+                                    <small class="text-muted">Add your contact list with company and recruiter info</small>
+                                </div>
+                            </li>
+                            <li class="list-group-item d-flex align-items-center">
+                                <span class="badge bg-primary me-3">3</span>
+                                <div>
+                                    <strong>Start Campaign</strong><br>
+                                    <small class="text-muted">Send personalized emails automatically</small>
+                                </div>
+                            </li>
+                        </ol>
+                        <div class="mt-3">
+                            <a href="{{ url_for('configure') }}" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-play me-2"></i>Get Started Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>What You Need</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-envelope text-primary me-3"></i>
+                                <div>
+                                    <strong>Email Account</strong><br>
+                                    <small class="text-muted">Gmail, Outlook, Yahoo, or any email provider</small>
+                                </div>
+                            </div>
+                            <div class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-file-csv text-success me-3"></i>
+                                <div>
+                                    <strong>Contact List</strong><br>
+                                    <small class="text-muted">CSV file with company names and email addresses</small>
+                                </div>
+                            </div>
+                            <div class="list-group-item d-flex align-items-center">
+                                <i class="fas fa-file-pdf text-warning me-3"></i>
+                                <div>
+                                    <strong>Resume (Optional)</strong><br>
+                                    <small class="text-muted">PDF, DOC, or DOCX file to attach to emails</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Email Provider Setup -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5><i class="fas fa-cog me-2"></i>Email Provider Setup</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="text-center p-3 border rounded">
+                            <i class="fab fa-google fa-3x text-primary mb-3"></i>
+                            <h6>Gmail</h6>
+                            <p class="small text-muted">Most popular choice</p>
+                            <ol class="text-start small">
+                                <li>Enable 2-Factor Authentication</li>
+                                <li>Create App Password</li>
+                                <li>Use app password in settings</li>
+                            </ol>
+                            <a href="https://myaccount.google.com/apppasswords" target="_blank" class="btn btn-outline-primary btn-sm">
+                                Setup Gmail
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center p-3 border rounded">
+                            <i class="fab fa-microsoft fa-3x text-info mb-3"></i>
+                            <h6>Outlook</h6>
+                            <p class="small text-muted">Microsoft accounts</p>
+                            <ol class="text-start small">
+                                <li>Enable 2-Factor Authentication</li>
+                                <li>Create App Password</li>
+                                <li>Use app password in settings</li>
+                            </ol>
+                            <a href="https://account.microsoft.com/security" target="_blank" class="btn btn-outline-info btn-sm">
+                                Setup Outlook
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center p-3 border rounded">
+                            <i class="fas fa-envelope fa-3x text-success mb-3"></i>
+                            <h6>Other Providers</h6>
+                            <p class="small text-muted">Yahoo, ProtonMail, etc.</p>
+                            <ul class="text-start small">
+                                <li>Enable 2-Factor Authentication</li>
+                                <li>Create App Password</li>
+                                <li>Use SMTP settings</li>
+                            </ul>
+                            <a href="{{ url_for('configure') }}" class="btn btn-outline-success btn-sm">
+                                Configure
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CSV Format Example -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5><i class="fas fa-table me-2"></i>CSV Format Example</h5>
+            </div>
+            <div class="card-body">
+                <p>Create a CSV file with these columns:</p>
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>company_name</th>
+                                <th>role</th>
+                                <th>recruiter_email</th>
+                                <th>recruiter_first_name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Google</td>
+                                <td>Software Engineer</td>
+                                <td>john@google.com</td>
+                                <td>John</td>
+                            </tr>
+                            <tr>
+                                <td>Microsoft</td>
+                                <td>Developer</td>
+                                <td>sarah@microsoft.com</td>
+                                <td>Sarah</td>
+                            </tr>
+                            <tr>
+                                <td>Amazon</td>
+                                <td>Data Scientist</td>
+                                <td>mike@amazon.com</td>
+                                <td>Mike</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-3">
+                    <a href="#" class="btn btn-outline-primary btn-sm" id="download-template">
+                        <i class="fas fa-download me-1"></i>Download Template CSV
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Overview -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5><i class="fas fa-star me-2"></i>Key Features</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Easy email setup</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>CSV contact management</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Custom email templates</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Resume attachments</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Real-time progress tracking</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Safe test mode</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Comprehensive logging</li>
+                            <li class="mb-2"><i class="fas fa-check text-success me-2"></i>Mobile-friendly interface</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="text-center mt-4">
+            <a href="{{ url_for('configure') }}" class="btn btn-primary btn-lg me-3">
+                <i class="fas fa-cog me-2"></i>Start Setup
+            </a>
+            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-lg">
+                <i class="fas fa-home me-2"></i>Go to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Download template CSV
+    document.getElementById('download-template').addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const csvContent = 'company_name,role,recruiter_email,recruiter_first_name\n' +
+                          'Google,Software Engineer,john@google.com,John\n' +
+                          'Microsoft,Developer,sarah@microsoft.com,Sarah\n' +
+                          'Amazon,Data Scientist,mike@amazon.com,Mike\n' +
+                          'Facebook,Product Manager,lisa@facebook.com,Lisa\n' +
+                          'Netflix,Data Engineer,alex@netflix.com,Alex';
+        
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'email_template.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+    });
+});
+</script>
+{% endblock %}

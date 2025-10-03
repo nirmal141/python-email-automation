@@ -1,0 +1,485 @@
+{% extends "base.html" %}
+
+{% block title %}Email Campaign - Email Automation{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-rocket me-2"></i>Email Campaign</h1>
+            <div class="btn-group">
+                <button class="btn btn-success" id="start-campaign" {% if status.running %}disabled{% endif %}>
+                    <i class="fas fa-play me-1"></i>Start Campaign
+                </button>
+                <button class="btn btn-danger" id="stop-campaign" {% if not status.running %}disabled{% endif %}>
+                    <i class="fas fa-stop me-1"></i>Stop Campaign
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body text-center">
+                <h3 id="total-emails">{{ status.total or 0 }}</h3>
+                <p class="mb-0">Total Emails</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body text-center">
+                <h3 id="sent-emails">{{ status.sent or 0 }}</h3>
+                <p class="mb-0">Sent Successfully</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-danger text-white">
+            <div class="card-body text-center">
+                <h3 id="failed-emails">{{ status.failed or 0 }}</h3>
+                <p class="mb-0">Failed</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body text-center">
+                <h3 id="progress-percentage">0%</h3>
+                <p class="mb-0">Progress</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-line me-2"></i>Campaign Progress</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span>Overall Progress</span>
+                        <span id="progress-text">0 / 0</span>
+                    </div>
+                    <div class="progress" style="height: 25px;">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                             id="progress-bar" role="progressbar" style="width: 0%">
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="campaign-status" class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <span id="status-text">Ready to start campaign</span>
+                </div>
+                
+                <div id="current-email" class="alert alert-light" style="display: none;">
+                    <i class="fas fa-envelope me-2"></i>
+                    <strong>Currently sending to:</strong> <span id="current-email-text"></span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5><i class="fas fa-cog me-2"></i>Campaign Settings</h5>
+            </div>
+            <div class="card-body">
+                <form id="campaign-settings">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="test-mode" class="form-label">Test Mode</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="test-mode" checked>
+                                    <label class="form-check-label" for="test-mode">
+                                        Run in test mode (no actual emails sent)
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="delay-seconds" class="form-label">Delay Between Emails (seconds)</label>
+                                <input type="number" class="form-control" id="delay-seconds" value="2" min="1" max="60">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="resume-path" class="form-label">Resume File</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="resume-path" 
+                                   placeholder="Select a resume file">
+                            <button class="btn btn-outline-secondary" type="button" id="browse-resume">
+                                <i class="fas fa-folder-open me-1"></i>Browse
+                            </button>
+                        </div>
+                        <div class="form-text">Select a resume file to attach to emails</div>
+                    </div>
+                    
+                    <div id="resume-list" class="mb-3" style="display: none;">
+                        <label class="form-label">Available Resumes:</label>
+                        <div id="resume-files-list" class="list-group"></div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-tools me-2"></i>Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary" id="test-connection">
+                        <i class="fas fa-plug me-1"></i>Test Email Connection
+                    </button>
+                    <button class="btn btn-outline-info" id="send-test-email">
+                        <i class="fas fa-paper-plane me-1"></i>Send Test Email
+                    </button>
+                    <a href="{{ url_for('preview') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-eye me-1"></i>Preview Data
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle me-2"></i>Campaign Info</h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span>Status</span>
+                        <span id="campaign-status-badge" class="badge bg-secondary">Ready</span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span>Start Time</span>
+                        <span id="start-time">-</span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span>End Time</span>
+                        <span id="end-time">-</span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between">
+                        <span>Duration</span>
+                        <span id="duration">-</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Test Email Modal -->
+<div class="modal fade" id="testEmailModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Send Test Email</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="test-email-address" class="form-label">Test Email Address</label>
+                    <input type="email" class="form-control" id="test-email-address" 
+                           placeholder="your.email@example.com">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="send-test-email-btn">Send Test Email</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let statusInterval;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Start status polling
+    startStatusPolling();
+    
+    // Event listeners
+    document.getElementById('start-campaign').addEventListener('click', startCampaign);
+    document.getElementById('stop-campaign').addEventListener('click', stopCampaign);
+    document.getElementById('test-connection').addEventListener('click', testConnection);
+    document.getElementById('send-test-email').addEventListener('click', showTestEmailModal);
+    document.getElementById('send-test-email-btn').addEventListener('click', sendTestEmail);
+    document.getElementById('browse-resume').addEventListener('click', browseResumes);
+    
+    // Initial status update
+    updateStatus();
+});
+
+function startStatusPolling() {
+    statusInterval = setInterval(updateStatus, 2000); // Update every 2 seconds
+}
+
+function stopStatusPolling() {
+    if (statusInterval) {
+        clearInterval(statusInterval);
+    }
+}
+
+function updateStatus() {
+    fetch('/campaign_status')
+        .then(response => response.json())
+        .then(data => {
+            updateUI(data);
+        })
+        .catch(error => {
+            console.error('Error fetching status:', error);
+        });
+}
+
+function updateUI(status) {
+    // Update counters
+    document.getElementById('total-emails').textContent = status.total || 0;
+    document.getElementById('sent-emails').textContent = status.sent || 0;
+    document.getElementById('failed-emails').textContent = status.failed || 0;
+    
+    // Update progress
+    const total = status.total || 0;
+    const sent = status.sent || 0;
+    const progress = total > 0 ? Math.round((sent / total) * 100) : 0;
+    
+    document.getElementById('progress-percentage').textContent = progress + '%';
+    document.getElementById('progress-text').textContent = `${sent} / ${total}`;
+    document.getElementById('progress-bar').style.width = progress + '%';
+    
+    // Update status text
+    const statusText = document.getElementById('status-text');
+    const currentEmailDiv = document.getElementById('current-email');
+    const currentEmailText = document.getElementById('current-email-text');
+    
+    if (status.running) {
+        statusText.textContent = 'Campaign is running...';
+        document.getElementById('campaign-status').className = 'alert alert-success';
+        if (status.current_email) {
+            currentEmailDiv.style.display = 'block';
+            currentEmailText.textContent = status.current_email;
+        }
+    } else if (status.results) {
+        statusText.textContent = 'Campaign completed!';
+        document.getElementById('campaign-status').className = 'alert alert-info';
+        currentEmailDiv.style.display = 'none';
+    } else {
+        statusText.textContent = 'Ready to start campaign';
+        document.getElementById('campaign-status').className = 'alert alert-info';
+        currentEmailDiv.style.display = 'none';
+    }
+    
+    // Update buttons
+    document.getElementById('start-campaign').disabled = status.running;
+    document.getElementById('stop-campaign').disabled = !status.running;
+    
+    // Update status badge
+    const statusBadge = document.getElementById('campaign-status-badge');
+    if (status.running) {
+        statusBadge.textContent = 'Running';
+        statusBadge.className = 'badge bg-success';
+    } else if (status.results) {
+        statusBadge.textContent = 'Completed';
+        statusBadge.className = 'badge bg-info';
+    } else {
+        statusBadge.textContent = 'Ready';
+        statusBadge.className = 'badge bg-secondary';
+    }
+    
+    // Update times
+    if (status.start_time) {
+        document.getElementById('start-time').textContent = new Date(status.start_time).toLocaleString();
+    }
+    if (status.end_time) {
+        document.getElementById('end-time').textContent = new Date(status.end_time).toLocaleString();
+    }
+    if (status.start_time && status.end_time) {
+        const start = new Date(status.start_time);
+        const end = new Date(status.end_time);
+        const duration = Math.round((end - start) / 1000);
+        document.getElementById('duration').textContent = `${duration} seconds`;
+    }
+}
+
+function startCampaign() {
+    const testMode = document.getElementById('test-mode').checked;
+    const delaySeconds = parseInt(document.getElementById('delay-seconds').value);
+    const resumePath = document.getElementById('resume-path').value;
+    
+    fetch('/start_campaign', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            test_mode: testMode,
+            delay_seconds: delaySeconds,
+            resume_path: resumePath
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert('Error starting campaign: ' + data.error);
+        } else {
+            alert('Campaign started successfully!');
+        }
+    })
+    .catch(error => {
+        alert('Error starting campaign: ' + error.message);
+    });
+}
+
+function stopCampaign() {
+    fetch('/stop_campaign', {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Campaign stopped');
+    })
+    .catch(error => {
+        alert('Error stopping campaign: ' + error.message);
+    });
+}
+
+function testConnection() {
+    const btn = document.getElementById('test-connection');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Testing...';
+    
+    fetch('/test_connection', {
+        method: 'POST'
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert('Connection failed: ' + data.error);
+        } else {
+            alert('Connection successful!');
+        }
+    })
+    .catch(error => {
+        alert('Error testing connection: ' + error.message);
+    })
+    .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-plug me-1"></i>Test Email Connection';
+    });
+}
+
+function showTestEmailModal() {
+    const modal = new bootstrap.Modal(document.getElementById('testEmailModal'));
+    modal.show();
+}
+
+function sendTestEmail() {
+    const email = document.getElementById('test-email-address').value;
+    if (!email) {
+        alert('Please enter a test email address');
+        return;
+    }
+    
+    const btn = document.getElementById('send-test-email-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Sending...';
+    
+    fetch('/send_test_email', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            test_email: email
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert('Error sending test email: ' + data.error);
+        } else {
+            alert('Test email sent successfully!');
+            const modal = bootstrap.Modal.getInstance(document.getElementById('testEmailModal'));
+            modal.hide();
+        }
+    })
+    .catch(error => {
+        alert('Error sending test email: ' + error.message);
+    })
+    .finally(() => {
+        btn.disabled = false;
+        btn.innerHTML = 'Send Test Email';
+    });
+}
+
+function browseResumes() {
+    const resumeList = document.getElementById('resume-list');
+    const resumeFilesList = document.getElementById('resume-files-list');
+    
+    if (resumeList.style.display === 'none') {
+        // Load resume list
+        fetch('/get_resume_list')
+            .then(response => response.json())
+            .then(data => {
+                if (data.length === 0) {
+                    resumeFilesList.innerHTML = '<div class="text-muted p-3">No resumes uploaded yet. Go to Email Template page to upload one.</div>';
+                } else {
+                    resumeFilesList.innerHTML = data.map(resume => `
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>${resume.filename}</strong><br>
+                                <small class="text-muted">${resume.size_mb} MB</small>
+                            </div>
+                            <button class="btn btn-sm btn-primary" onclick="selectResume('${resume.filepath}', '${resume.filename}')">
+                                Select
+                            </button>
+                        </div>
+                    `).join('');
+                }
+                resumeList.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error loading resumes:', error);
+                resumeFilesList.innerHTML = '<div class="text-danger p-3">Error loading resumes</div>';
+                resumeList.style.display = 'block';
+            });
+    } else {
+        resumeList.style.display = 'none';
+    }
+}
+
+function selectResume(filepath, filename) {
+    document.getElementById('resume-path').value = filepath;
+    document.getElementById('resume-list').style.display = 'none';
+    showAlert('Resume selected: ' + filename, 'success');
+}
+
+function showAlert(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    const main = document.querySelector('main');
+    if (main) {
+        main.insertBefore(alertDiv, main.firstChild);
+        setTimeout(() => alertDiv.remove(), 3000);
+    }
+}
+</script>
+{% endblock %}
+

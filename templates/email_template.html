@@ -1,0 +1,382 @@
+{% extends "base.html" %}
+
+{% block title %}Email Template - Email Automation{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="fas fa-edit me-2"></i>Email Template Customization</h1>
+            <div class="btn-group">
+                <button class="btn btn-outline-primary" id="preview-email">
+                    <i class="fas fa-eye me-1"></i>Preview Email
+                </button>
+                <button class="btn btn-primary" id="save-template">
+                    <i class="fas fa-save me-1"></i>Save Template
+                </button>
+                <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-envelope me-2"></i>Email Template Settings</h5>
+            </div>
+            <div class="card-body">
+                <form id="email-template-form">
+                    <div class="mb-3">
+                        <label for="subject_template" class="form-label">Subject Template</label>
+                        <input type="text" class="form-control" id="subject_template" 
+                               value="Excited for {role} Position at {company_name}"
+                               placeholder="Email subject template">
+                        <div class="form-text">Use {role} and {company_name} for dynamic content</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="sender_name" class="form-label">Sender Name</label>
+                        <input type="text" class="form-control" id="sender_name" 
+                               value="Nirmal Boghara" placeholder="Your name">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="sender_email" class="form-label">Sender Email</label>
+                        <input type="email" class="form-control" id="sender_email" 
+                               placeholder="your.email@example.com">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="html_template" class="form-label">HTML Email Template</label>
+                        <textarea class="form-control" id="html_template" rows="15" 
+                                  placeholder="Enter your HTML email template here..."></textarea>
+                        <div class="form-text">Use {recruiter_name}, {company_name}, {role} for personalization</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="text_template" class="form-label">Plain Text Template</label>
+                        <textarea class="form-control" id="text_template" rows="10" 
+                                  placeholder="Enter your plain text email template here..."></textarea>
+                        <div class="form-text">Plain text version of your email</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="signature" class="form-label">Email Signature</label>
+                        <textarea class="form-control" id="signature" rows="4" 
+                                  placeholder="Your email signature..."></textarea>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-info-circle me-2"></i>Template Variables</h5>
+            </div>
+            <div class="card-body">
+                <h6>Available Variables:</h6>
+                <ul class="list-unstyled">
+                    <li><code>{recruiter_name}</code> - Recruiter's name</li>
+                    <li><code>{company_name}</code> - Company name</li>
+                    <li><code>{role}</code> - Job role/position</li>
+                    <li><code>{sender_name}</code> - Your name</li>
+                    <li><code>{sender_email}</code> - Your email</li>
+                </ul>
+                
+                <h6 class="mt-3">Example Usage:</h6>
+                <div class="bg-light p-2 rounded">
+                    <small>
+                        <strong>Subject:</strong> Excited for {role} Position at {company_name}<br>
+                        <strong>Body:</strong> Hi {recruiter_name}, I'm interested in the {role} position at {company_name}...
+                    </small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5><i class="fas fa-upload me-2"></i>Resume Upload</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="resume_file" class="form-label">Upload Resume</label>
+                    <input type="file" class="form-control" id="resume_file" 
+                           accept=".pdf,.doc,.docx">
+                    <div class="form-text">PDF, DOC, or DOCX files only (max 10MB)</div>
+                </div>
+                
+                <div id="resume-upload-status" class="alert alert-info" style="display: none;">
+                    <i class="fas fa-info-circle me-1"></i>
+                    <span id="resume-status-text"></span>
+                </div>
+                
+                <div id="resume-list">
+                    <h6>Available Resumes:</h6>
+                    <div id="resume-files-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Email Preview Modal -->
+<div class="modal fade" id="emailPreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Email Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label">Sample Data:</label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="preview-company" 
+                                   value="Sample Company" placeholder="Company Name">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="preview-role" 
+                                   value="Software Engineer Intern" placeholder="Role">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="preview-recruiter" 
+                                   value="John" placeholder="Recruiter Name">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="email" class="form-control" id="preview-email" 
+                                   value="recruiter@company.com" placeholder="Recruiter Email">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <strong>Subject:</strong>
+                    <div class="border p-2 bg-light" id="preview-subject"></div>
+                </div>
+                
+                <div class="mb-3">
+                    <strong>HTML Preview:</strong>
+                    <div class="border p-3" id="preview-html" style="max-height: 300px; overflow-y: auto;"></div>
+                </div>
+                
+                <div class="mb-3">
+                    <strong>Plain Text Preview:</strong>
+                    <pre class="border p-2 bg-light" id="preview-text" style="max-height: 200px; overflow-y: auto;"></pre>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="update-preview">Update Preview</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load existing template
+    loadEmailTemplate();
+    loadResumeList();
+    
+    // Event listeners
+    document.getElementById('save-template').addEventListener('click', saveTemplate);
+    document.getElementById('preview-email').addEventListener('click', showPreviewModal);
+    document.getElementById('update-preview').addEventListener('click', updatePreview);
+    document.getElementById('resume_file').addEventListener('change', uploadResume);
+    
+    // Auto-save on changes
+    document.querySelectorAll('#email-template-form input, #email-template-form textarea').forEach(element => {
+        element.addEventListener('input', debounce(saveTemplate, 2000));
+    });
+});
+
+function loadEmailTemplate() {
+    fetch('/get_email_template')
+        .then(response => response.json())
+        .then(data => {
+            if (data.subject_template) document.getElementById('subject_template').value = data.subject_template;
+            if (data.sender_name) document.getElementById('sender_name').value = data.sender_name;
+            if (data.sender_email) document.getElementById('sender_email').value = data.sender_email;
+            if (data.html_template) document.getElementById('html_template').value = data.html_template;
+            if (data.text_template) document.getElementById('text_template').value = data.text_template;
+            if (data.signature) document.getElementById('signature').value = data.signature;
+        })
+        .catch(error => console.error('Error loading template:', error));
+}
+
+function saveTemplate() {
+    const templateData = {
+        subject_template: document.getElementById('subject_template').value,
+        sender_name: document.getElementById('sender_name').value,
+        sender_email: document.getElementById('sender_email').value,
+        html_template: document.getElementById('html_template').value,
+        text_template: document.getElementById('text_template').value,
+        signature: document.getElementById('signature').value
+    };
+    
+    fetch('/save_email_template', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(templateData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert('Error saving template: ' + data.error);
+        } else {
+            showAlert('Template saved successfully!', 'success');
+        }
+    })
+    .catch(error => {
+        console.error('Error saving template:', error);
+        alert('Error saving template: ' + error.message);
+    });
+}
+
+function showPreviewModal() {
+    const modal = new bootstrap.Modal(document.getElementById('emailPreviewModal'));
+    modal.show();
+    updatePreview();
+}
+
+function updatePreview() {
+    const previewData = {
+        company_name: document.getElementById('preview-company').value,
+        role: document.getElementById('preview-role').value,
+        recruiter_email: document.getElementById('preview-email').value,
+        recruiter_first_name: document.getElementById('preview-recruiter').value
+    };
+    
+    fetch('/preview_email', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(previewData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert('Error generating preview: ' + data.error);
+        } else {
+            document.getElementById('preview-subject').textContent = data.subject;
+            document.getElementById('preview-html').innerHTML = data.html_body;
+            document.getElementById('preview-text').textContent = data.text_body;
+        }
+    })
+    .catch(error => {
+        console.error('Error generating preview:', error);
+        alert('Error generating preview: ' + error.message);
+    });
+}
+
+function uploadResume() {
+    const fileInput = document.getElementById('resume_file');
+    const file = fileInput.files[0];
+    
+    if (!file) return;
+    
+    const formData = new FormData();
+    formData.append('resume_file', file);
+    
+    const statusDiv = document.getElementById('resume-upload-status');
+    const statusText = document.getElementById('resume-status-text');
+    
+    statusDiv.style.display = 'block';
+    statusText.textContent = 'Uploading resume...';
+    statusDiv.className = 'alert alert-info';
+    
+    fetch('/upload_resume', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            statusText.textContent = 'Error: ' + data.error;
+            statusDiv.className = 'alert alert-danger';
+        } else {
+            statusText.textContent = data.message;
+            statusDiv.className = 'alert alert-success';
+            loadResumeList();
+            fileInput.value = '';
+        }
+    })
+    .catch(error => {
+        statusText.textContent = 'Error uploading: ' + error.message;
+        statusDiv.className = 'alert alert-danger';
+    });
+}
+
+function loadResumeList() {
+    fetch('/get_resume_list')
+        .then(response => response.json())
+        .then(data => {
+            const listDiv = document.getElementById('resume-files-list');
+            if (data.length === 0) {
+                listDiv.innerHTML = '<p class="text-muted">No resumes uploaded yet.</p>';
+            } else {
+                listDiv.innerHTML = data.map(resume => `
+                    <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                        <div>
+                            <strong>${resume.filename}</strong><br>
+                            <small class="text-muted">${resume.size_mb} MB</small>
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary" onclick="selectResume('${resume.filepath}')">
+                            Select
+                        </button>
+                    </div>
+                `).join('');
+            }
+        })
+        .catch(error => console.error('Error loading resume list:', error));
+}
+
+function selectResume(filepath) {
+    // This would be used to select a resume for the campaign
+    console.log('Selected resume:', filepath);
+    showAlert('Resume selected: ' + filepath.split('/').pop(), 'success');
+}
+
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
+
+function showAlert(message, type) {
+    // Create and show alert
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    const main = document.querySelector('main');
+    if (main) {
+        main.insertBefore(alertDiv, main.firstChild);
+        setTimeout(() => alertDiv.remove(), 5000);
+    }
+}
+</script>
+{% endblock %}
