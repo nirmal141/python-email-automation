@@ -102,11 +102,11 @@ For issues and questions:
 
 Want to share your app with others? Deploy it for free:
 
-### Quick Deploy to Vercel
-1. **Go to** [vercel.com](https://vercel.com)
+### Quick Deploy to Railway
+1. **Go to** [railway.app](https://railway.app)
 2. **Sign up** with GitHub
-3. **Import your repository**
-4. **Click "Deploy"**
+3. **Deploy from GitHub repo**
+4. **Choose your repository**
 
 **See [DEPLOY.md](DEPLOY.md) for detailed instructions.**
 

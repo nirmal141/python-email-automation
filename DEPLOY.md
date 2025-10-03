@@ -1,6 +1,6 @@
-# 🚀 Deploy to Vercel (Free Hosting)
+# 🚀 Deploy to Railway (Free Hosting)
 
-Deploy your Email Automation Dashboard to Vercel in just 2 minutes!
+Deploy your Email Automation Dashboard to Railway in just 2 minutes!
 
 ## 🚀 Quick Deployment
 
@@ -10,23 +10,24 @@ Deploy your Email Automation Dashboard to Vercel in just 2 minutes!
 git add .
 
 # Commit changes
-git commit -m "Add Vercel deployment support"
+git commit -m "Add Railway deployment support"
 
 # Push to GitHub
 git push origin main
 ```
 
-### Step 2: Deploy to Vercel
-1. **Go to** [vercel.com](https://vercel.com)
+### Step 2: Deploy to Railway
+1. **Go to** [railway.app](https://railway.app)
 2. **Sign up** with GitHub
 3. **Click "New Project"**
-4. **Import your repository**
-5. **Click "Deploy"**
+4. **Select "Deploy from GitHub repo"**
+5. **Choose your repository**
+6. **Click "Deploy"**
 
 That's it! Your app will be live in 2 minutes.
 
 ## 🎯 Your App Will Be Available At:
-- **Vercel**: `https://your-app-name.vercel.app`
+- **Railway**: `https://your-app-name.railway.app`
 - **Custom domain** (optional)
 
 ## 🔄 Updates
@@ -36,13 +37,13 @@ git add .
 git commit -m "Update app"
 git push origin main
 
-# Vercel automatically redeploys!
+# Railway automatically redeploys!
 ```
 
 ## ✨ Benefits
 - ✅ **Free hosting**
+- ✅ **Perfect for Flask apps**
 - ✅ **Automatic deployments**
-- ✅ **Global CDN**
 - ✅ **Custom domains**
 - ✅ **No configuration needed**
 
