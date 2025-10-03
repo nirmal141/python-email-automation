@@ -497,13 +497,13 @@ def preview_email():
     else:
         return jsonify({'error': 'Email automation not configured'}), 400
 
+# Create necessary directories
+os.makedirs('uploads', exist_ok=True)
+os.makedirs('templates', exist_ok=True)
+os.makedirs('static/css', exist_ok=True)
+os.makedirs('static/js', exist_ok=True)
+
 if __name__ == '__main__':
-    # Create necessary directories
-    os.makedirs('uploads', exist_ok=True)
-    os.makedirs('templates', exist_ok=True)
-    os.makedirs('static/css', exist_ok=True)
-    os.makedirs('static/js', exist_ok=True)
-    
     port = int(os.environ.get('PORT', 5001))
     app.run(debug=False, host='0.0.0.0', port=port)
 

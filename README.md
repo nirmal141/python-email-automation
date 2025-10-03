@@ -102,23 +102,11 @@ For issues and questions:
 
 Want to share your app with others? Deploy it for free:
 
-### Quick Deploy to Heroku
-```bash
-# Install Heroku CLI
-# Create Heroku app
-heroku create your-app-name
-
-# Deploy
-git push heroku main
-
-# Open your app
-heroku open
-```
-
-### Or use Railway (Even Easier)
-1. Go to [railway.app](https://railway.app)
-2. Connect your GitHub repo
-3. Deploy automatically!
+### Quick Deploy to Vercel
+1. **Go to** [vercel.com](https://vercel.com)
+2. **Sign up** with GitHub
+3. **Import your repository**
+4. **Click "Deploy"**
 
 **See [DEPLOY.md](DEPLOY.md) for detailed instructions.**
 
