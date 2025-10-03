@@ -98,12 +98,40 @@ For issues and questions:
 3. Test in test mode first
 4. Check the troubleshooting section above
 
+## 🌐 Deploy Online (Optional)
+
+Want to share your app with others? Deploy it for free:
+
+### Quick Deploy to Heroku
+```bash
+# Install Heroku CLI
+# Create Heroku app
+heroku create your-app-name
+
+# Deploy
+git push heroku main
+
+# Open your app
+heroku open
+```
+
+### Or use Railway (Even Easier)
+1. Go to [railway.app](https://railway.app)
+2. Connect your GitHub repo
+3. Deploy automatically!
+
+**See [DEPLOY.md](DEPLOY.md) for detailed instructions.**
+
 ## 🎉 Ready to Get Started?
 
+### Local Use:
 1. **Install** dependencies: `pip install -r requirements.txt`
 2. **Run** the app: `python app.py`
-3. **Configure** your email
-4. **Upload** your contact list
-5. **Start** your first campaign!
+3. **Open** browser: `http://localhost:5001`
+
+### Deploy Online:
+1. **Follow** [DEPLOY.md](DEPLOY.md) guide
+2. **Share** your app URL with others
+3. **No installation** needed for users!
 
 **Happy emailing! 📧✨**
