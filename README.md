@@ -5,7 +5,7 @@ A simple web application for sending personalized emails at scale. Perfect for j
 ## 🌐 **Live Demo**
 **Try it now:** [eautomation.up.railway.app](https://eautomation.up.railway.app)
 
-*No installation needed - just open the link and start using it!*
+*No installation needed - just open link and start using it!*
 
 ## 🚀 Quick Start
 
