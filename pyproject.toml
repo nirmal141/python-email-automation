@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "email-automation"
+version = "1.0.0"
+description = "A professional Python library and CLI for sending personalized bulk emails via SMTP."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic[email]>=2.0",
+    "pydantic-settings>=2.0",
+    "typer[all]>=0.9",
+    "pandas>=2.0",
+    "rich>=13.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+
+[project.scripts]
+email-automation = "email_automation.cli:app"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/email_automation"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

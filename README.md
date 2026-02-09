@@ -1,137 +1,100 @@
-# 📧 Email Automation Dashboard
+# email-automation
 
-A simple web application for sending personalized emails at scale. Perfect for job seekers, marketers, and anyone who needs to send automated emails.
+A professional Python library and CLI for sending personalized bulk emails via SMTP.
 
-## 🌐 **Live Demo**
-**Try it now:** [eautomation.up.railway.app](https://eautomation.up.railway.app)
+## Installation
 
-*No installation needed - just open link and start using it!*
-
-## 🚀 Quick Start
-
-### Option 1: Use Live Demo (Recommended)
-**Just open:** [eautomation.up.railway.app](https://eautomation.up.railway.app)
-
-### Option 2: Run Locally
 ```bash
-# 1. Install dependencies
-pip install -r requirements.txt
+# From the repo root
+pip install .
 
-# 2. Run the application
-python app.py
-
-# 3. Open in browser
-# Go to: http://localhost:5001
+# Or in editable/dev mode
+pip install -e ".[dev]"
 ```
 
-## 📋 What You Need
+## Quick Start
 
-- **Python 3.8+** ([Download here](https://python.org))
-- **Email account** (Gmail, Outlook, Yahoo, etc.)
-- **Contact list** (CSV file with names and emails)
+### CLI
 
-## 🎯 How to Use
+```bash
+# Create a .env config interactively
+email-automation init
 
-### Step 1: Configure Your Email
-1. Go to **Configure** page
-2. Enter your email and app password
-3. Test the connection
+# Test your SMTP connection
+email-automation test
 
-### Step 2: Upload Your Contact List
-1. Go to **Upload CSV** page
-2. Upload your CSV file with contacts
-3. Preview your data
+# Preview contacts from a CSV
+email-automation preview contacts.csv
 
-### Step 3: Start Your Campaign
-1. Go to **Campaign** page
-2. Configure settings (test mode recommended first)
-3. Start sending emails!
+# Dry-run (no emails sent)
+email-automation send contacts.csv --test-mode
 
-## 📧 Email Provider Setup
-
-### Gmail (Most Popular)
-1. Enable 2-Factor Authentication
-2. Create App Password: [Google App Passwords](https://myaccount.google.com/apppasswords)
-3. Use the app password (not your regular password)
-
-### Outlook/Hotmail
-1. Enable 2-Factor Authentication
-2. Create App Password: [Microsoft Security](https://account.microsoft.com/security)
-3. Use the app password
-
-## 📊 CSV Format
-
-Create a CSV file with these columns:
-
-```csv
-company_name,role,recruiter_email,recruiter_first_name
-Google,Software Engineer,john@google.com,John
-Microsoft,Developer,sarah@microsoft.com,Sarah
-Amazon,Data Scientist,mike@amazon.com,Mike
+# Send for real
+email-automation send contacts.csv --live --resume resume.pdf
 ```
 
-## ✨ Features
+### Python API
 
-- 🎯 **Easy Setup**: Simple email configuration
-- 📊 **CSV Management**: Upload and validate contact lists
-- ✉️ **Email Templates**: Customize your email content
-- 📄 **Resume Attachments**: Automatically attach resumes
-- 🚀 **Campaign Management**: Start, stop, and monitor campaigns
-- 📈 **Real-time Progress**: Live updates during email sending
-- 🧪 **Test Mode**: Safe testing without sending actual emails
-- 📱 **Mobile Friendly**: Works on all devices
+```python
+from email_automation import Settings, EmailCampaign, CampaignConfig
 
-## 🔧 Troubleshooting
+settings = Settings()  # loads from .env / environment
+campaign = EmailCampaign(settings)
 
-### "Connection Failed"
-- ✅ Check your email and password
-- ✅ Use app password, not regular password
-- ✅ Enable 2-factor authentication
+result = campaign.run(
+    CampaignConfig(csv_path="contacts.csv", test_mode=True)
+)
 
-### "CSV Upload Error"
-- ✅ Ensure CSV has required columns
-- ✅ Check file size (max 10MB)
-- ✅ Verify file format (.csv)
+print(f"Sent {result.sent}/{result.total}")
+```
 
-### "Port Already in Use"
-- ✅ Use different port: `python app.py --port 5002`
-- ✅ Kill existing process: `lsof -ti:5001 | xargs kill -9`
+## Configuration
 
-## 📞 Support
+All settings are read from environment variables prefixed with `EA_`. You can
+also place them in a `.env` file in your working directory.
 
-For issues and questions:
-1. Check campaign status for error messages
-2. Verify your email configuration
-3. Test in test mode first
-4. Check the troubleshooting section above
+| Variable | Required | Default | Description |
+|---|---|---|---|
+| `EA_SMTP_USERNAME` | yes | — | SMTP login username |
+| `EA_SMTP_PASSWORD` | yes | — | SMTP password / app password |
+| `EA_SENDER_NAME` | yes | — | Display name on outgoing emails |
+| `EA_SENDER_EMAIL` | yes | — | Sender email address |
+| `EA_SMTP_HOST` | no | `smtp.gmail.com` | SMTP server hostname |
+| `EA_SMTP_PORT` | no | `587` | SMTP server port |
+| `EA_EMAIL_DELAY_SECONDS` | no | `2.0` | Pause between emails (seconds) |
+| `EA_LOG_LEVEL` | no | `INFO` | Python log level |
 
-## 🌐 Deploy Online (Optional)
+See `.env.example` for a template.
 
-Want to share your app with others? Deploy it for free:
+## CSV Format
 
-### Quick Deploy to Railway
-1. **Go to** [railway.app](https://railway.app)
-2. **Sign up** with GitHub
-3. **Deploy from GitHub repo**
-4. **Choose your repository**
+Your contacts CSV must contain these columns:
 
-**Railway will automatically detect your Flask app and deploy it!**
+| Column | Required | Description |
+|---|---|---|
+| `company_name` | yes | Company name |
+| `role` | yes | Job title / role |
+| `recruiter_email` | yes | Recipient email address |
+| `recruiter_first_name` | no | Personalised greeting name |
 
-## 🎉 Ready to Get Started?
+## CLI Reference
 
-### Try It Now (Easiest):
-1. **Open** [eautomation.up.railway.app](https://eautomation.up.railway.app)
-2. **Configure** your email
-3. **Start** sending emails!
+| Command | Description |
+|---|---|
+| `email-automation init` | Interactively create a `.env` file |
+| `email-automation test` | Test the SMTP connection |
+| `email-automation preview <csv>` | Show contacts table and sample email |
+| `email-automation send <csv>` | Run a campaign (`--test-mode` / `--live`) |
 
-### Run Locally:
-1. **Install** dependencies: `pip install -r requirements.txt`
-2. **Run** the app: `python app.py`
-3. **Open** browser: `http://localhost:5001`
+Run `email-automation --help` for full option details.
 
-### Deploy Your Own:
-1. **Go to** [railway.app](https://railway.app)
-2. **Deploy** from GitHub repo
-3. **Share** your app URL with others
+## Development
 
-**Happy emailing! 📧✨**
+```bash
+pip install -e ".[dev]"
+pytest
+```
+
+## License
+
+MIT
